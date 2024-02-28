@@ -84,6 +84,7 @@ describe('MyOFT Test', function () {
 
         // Defining extra message execution options for the send operation
         const options = Options.newOptions().addExecutorLzReceiveOption(200000, 0).toHex().toString()
+        console.log(options);
 
         const sendParam = [
             eidB,
@@ -120,7 +121,7 @@ describe('MyOFT Test', function () {
         const tokensToSend = ethers.utils.parseEther('1')
 
         // Defining extra message execution options for the send operation
-        const options = Options.newOptions().addExecutorLzReceiveOption(200000, 0).addExecutorComposeOption(0, 50000, 10000000000).toHex().toString()
+        const options = Options.newOptions().addExecutorLzReceiveOption(200000, 0).addExecutorComposeOption(0, 200000, 10000000000).toHex().toString()
 
         // Fetching the native fee for the token send operation
         // TODO: implement quote sendAndSwap const [nativeFee] = await myOFTA.quoteSend(sendParam, false)

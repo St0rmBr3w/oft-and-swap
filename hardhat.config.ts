@@ -10,6 +10,8 @@ import 'hardhat-contract-sizer'
 import '@nomiclabs/hardhat-ethers'
 import '@layerzerolabs/toolbox-hardhat'
 import { HardhatUserConfig, HttpNetworkAccountsUserConfig } from 'hardhat/types'
+import "./tasks/sendAndSwap";
+
 
 import { EndpointId } from '@layerzerolabs/lz-definitions'
 
@@ -49,19 +51,14 @@ const config: HardhatUserConfig = {
         ],
     },
     networks: {
-        sepolia: {
-            eid: EndpointId.SEPOLIA_V2_TESTNET,
-            url: 'https://rpc.sepolia.org/',
+        arbsep: {
+            eid: EndpointId.ARBSEP_V2_TESTNET,
+            url: 'https://sepolia-rollup.arbitrum.io/rpc',
             accounts,
         },
         fuji: {
             eid: EndpointId.AVALANCHE_V2_TESTNET,
             url: 'https://rpc.ankr.com/avalanche_fuji',
-            accounts,
-        },
-        mumbai: {
-            eid: EndpointId.POLYGON_V2_TESTNET,
-            url: 'https://rpc.ankr.com/polygon_mumbai',
             accounts,
         },
     },

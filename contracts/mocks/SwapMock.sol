@@ -2,39 +2,20 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import { IOAppCore } from "@layerzerolabs/lz-evm-oapp-v2/contracts/oapp/interfaces/IOAppCore.sol";
 import { IOAppComposer } from "@layerzerolabs/lz-evm-oapp-v2/contracts/oapp/interfaces/IOAppComposer.sol";
 
-contract SimpleSwapMock is IOAppComposer {
-    IERC20 public oft;
+contract SwapMock is IOAppComposer {
+    using SafeERC20 for IERC20;
     IERC20 public erc20;
+    IOAppCore public oft;
 
-    event Swapped(address indexed user, address tokenIn, address tokenOut, uint256 amount);
+    event Swapped(address indexed user, address tokenOut, uint256 amount);
 
-    constructor(address _oft, address _erc20) {
-        oft = IERC20(_oft);
+    constructor(address _erc20, address _oft) {
         erc20 = IERC20(_erc20);
-    }
-
-    function swapOFTforERC20(uint256 _amount, address _receiver) public payable {
-        require(_amount > 0, "Cannot swap 0 tokens");
-        require(oft.balanceOf(msg.sender) >= _amount, "Insufficient Token A balance");
-        require(erc20.balanceOf(address(this)) >= _amount, "Insufficient Token B in contract");
-
-        oft.transferFrom(msg.sender, address(this), _amount);
-        erc20.transfer(_receiver, _amount);
-
-        emit Swapped(_receiver, address(oft), address(erc20), _amount);
-    }
-
-    function swapERC20forOFT(uint256 _amount, address _receiver) public payable {
-        require(_amount > 0, "Cannot swap 0 tokens");
-        require(erc20.balanceOf(msg.sender) >= _amount, "Insufficient Token B balance");
-        require(oft.balanceOf(address(this)) >= _amount, "Insufficient Token A in contract");
-
-        erc20.transferFrom(msg.sender, address(this), _amount);
-        oft.transfer(_receiver, _amount);
-
-        emit Swapped(_receiver, address(erc20), address(oft), _amount);
+        oft = IOAppCore(_oft);
     }
 
     /// @notice Handles incoming composed messages from LayerZero.
@@ -49,8 +30,10 @@ contract SimpleSwapMock is IOAppComposer {
         address /*Executor*/,
         bytes calldata /*Executor Data*/
     ) external payable override {
-        // Decode the payload to get the message
+        // Decode the payload to get the message, this is how you would encode it on the source chain
+        // abi.encode(uint256, address)
         (uint256 _amountToSwap, address _receiver) = abi.decode(_message, (uint256, address));
-        this.swapOFTforERC20(_amountToSwap, _receiver);
+        erc20.safeTransferFrom(address(this), _receiver, _amountToSwap);
+        emit Swapped(_receiver, address(erc20), _amountToSwap);
     }
 }

@@ -1,19 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { EndpointId } from '@layerzerolabs/lz-definitions'
+import { ExecutorOptionType } from "@layerzerolabs/lz-v2-utilities";
+import {BigNumber} from "ethers";
 
-const sepoliaContract = {
-    eid: EndpointId.SEPOLIA_V2_TESTNET,
-    contractName: 'MyOFT',
+const arbsepContract = {
+    eid: EndpointId.ARBSEP_V2_TESTNET,
+    contractName: 'MyOFTMock',
 }
 
 const fujiContract = {
     eid: EndpointId.AVALANCHE_V2_TESTNET,
-    contractName: 'MyOFT',
-}
-
-const mumbaiContract = {
-    eid: EndpointId.POLYGON_V2_TESTNET,
-    contractName: 'MyOFT',
+    contractName: 'MyOFTMock',
 }
 
 export default {
@@ -22,36 +19,18 @@ export default {
             contract: fujiContract,
         },
         {
-            contract: sepoliaContract,
-        },
-        {
-            contract: mumbaiContract,
+            contract: arbsepContract,
         },
     ],
     connections: [
         {
             from: fujiContract,
-            to: sepoliaContract,
-            config: {},
+            to: arbsepContract,
+            config: {
+            },
         },
         {
-            from: fujiContract,
-            to: mumbaiContract,
-        },
-        {
-            from: sepoliaContract,
-            to: fujiContract,
-        },
-        {
-            from: sepoliaContract,
-            to: mumbaiContract,
-        },
-        {
-            from: mumbaiContract,
-            to: sepoliaContract,
-        },
-        {
-            from: mumbaiContract,
+            from: arbsepContract,
             to: fujiContract,
         },
     ],

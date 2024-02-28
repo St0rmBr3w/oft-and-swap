@@ -20,7 +20,6 @@ const deploy: DeployFunction = async (hre) => {
         args: [
             'Mock', // name
             'MOCK', // symbol
-            deployer, // owner
         ],
         log: true,
         skipIfAlreadyDeployed: false,
