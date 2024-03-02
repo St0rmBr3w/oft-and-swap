@@ -5,17 +5,16 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import { IOAppCore } from "@layerzerolabs/lz-evm-oapp-v2/contracts/oapp/interfaces/IOAppCore.sol";
 import { IOAppComposer } from "@layerzerolabs/lz-evm-oapp-v2/contracts/oapp/interfaces/IOAppComposer.sol";
+import { OFTComposeMsgCodec } from "@layerzerolabs/lz-evm-oapp-v2/contracts/oft/libs/OFTComposeMsgCodec.sol";
 
 contract SwapMock is IOAppComposer {
     using SafeERC20 for IERC20;
     IERC20 public erc20;
-    IOAppCore public oft;
 
     event Swapped(address indexed user, address tokenOut, uint256 amount);
 
-    constructor(address _erc20, address _oft) {
+    constructor(address _erc20) {
         erc20 = IERC20(_erc20);
-        oft = IOAppCore(_oft);
     }
 
     /// @notice Handles incoming composed messages from LayerZero.
@@ -32,8 +31,9 @@ contract SwapMock is IOAppComposer {
     ) external payable override {
         // Decode the payload to get the message, this is how you would encode it on the source chain
         // abi.encode(uint256, address)
-        (uint256 _amountToSwap, address _receiver) = abi.decode(_message, (uint256, address));
-        erc20.safeTransferFrom(address(this), _receiver, _amountToSwap);
+        bytes memory _composeMsgContent = OFTComposeMsgCodec.composeMsg(_message);
+        (uint256 _amountToSwap, address _receiver) = abi.decode(_composeMsgContent, (uint256, address));
+        erc20.safeTransfer(_receiver, _amountToSwap);
         emit Swapped(_receiver, address(erc20), _amountToSwap);
     }
 }

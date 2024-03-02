@@ -13,6 +13,11 @@ const fujiContract = {
     contractName: 'MyOFTMock',
 }
 
+const mumbaiContract = {
+    eid: EndpointId.POLYGON_V2_TESTNET,
+    contractName: 'MyOFTMock'
+}
+
 export default {
     contracts: [
         {

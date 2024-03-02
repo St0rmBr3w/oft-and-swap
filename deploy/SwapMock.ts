@@ -27,7 +27,6 @@ const deploy: DeployFunction = async (hre) => {
         from: deployer,
         args: [
             myERC20Address,
-            myOFTAddress,
         ],
         log: true,
         skipIfAlreadyDeployed: false,

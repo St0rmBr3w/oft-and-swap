@@ -11,6 +11,7 @@ import '@nomiclabs/hardhat-ethers'
 import '@layerzerolabs/toolbox-hardhat'
 import { HardhatUserConfig, HttpNetworkAccountsUserConfig } from 'hardhat/types'
 import "./tasks/sendAndSwap";
+import "./tasks/send";
 
 
 import { EndpointId } from '@layerzerolabs/lz-definitions'

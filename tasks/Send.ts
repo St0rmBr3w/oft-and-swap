@@ -3,9 +3,9 @@ import { TaskArguments } from "hardhat/types";
 import SwapMock from '../deployments/arbsep/SwapMock.json'
 import { Options } from "@layerzerolabs/lz-v2-utilities";
 import { EndpointId } from "@layerzerolabs/lz-definitions";
-import { SendParam } from "./typeDefinitions.ts";
+import { SendParam } from "./typeDefinitions";
 
-task("sendAndSwap", "Calls the send function on the MyOFTMock contract with encoded swap parameters")
+task("send", "Calls the send function on the MyOFTMock contract with encoded swap parameters")
     .addParam("contract", "The address of the MyOFTMock contract")
     .addParam("amount", "The amount of MyOFT to send")
     .addParam("recipient", "The recipient address")
@@ -15,19 +15,14 @@ task("sendAndSwap", "Calls the send function on the MyOFTMock contract with enco
 
         // Encoding the uint256 amount and address for the compose message
         const amountToSwap = ethers.utils.parseEther(taskArgs.amount).toBigInt();
-        const recipientAddress = taskArgs.recipient;
-        const encodedComposeMsg = ethers.utils.defaultAbiCoder.encode(
-            ["uint256", "address"], 
-            [amountToSwap, recipientAddress]
-        );
 
         const sendParam: SendParam = {
-            dstEid: 40231,
-            to: ethers.utils.hexZeroPad(SwapMock.address, 32),
+            dstEid: EndpointId.ARBSEP_V2_TESTNET,
+            to: ethers.utils.hexZeroPad(taskArgs.recipient, 32),
             amountLD: amountToSwap,
             minAmountLD: amountToSwap,
-            extraOptions: Options.newOptions().addExecutorLzReceiveOption(200000, 0).addExecutorComposeOption(0, 200000, ethers.utils.parseEther("0.001").toBigInt()).toHex().toString(),
-            composeMsg: encodedComposeMsg,
+            extraOptions: Options.newOptions().addExecutorLzReceiveOption(200000, 0).toHex().toString(),
+            composeMsg: ethers.utils.arrayify('0x'), // Assuming no composed message
             oftCmd: ethers.utils.arrayify('0x') // Assuming no OFT command is needed
         };
 
@@ -45,7 +40,7 @@ task("sendAndSwap", "Calls the send function on the MyOFTMock contract with enco
 
         console.log("Transaction Hash:", tx.hash);
         await tx.wait();
-        console.log("sendAndSwap transaction completed.");
+        console.log("Send transaction completed.");
     });
 
 export default {};
