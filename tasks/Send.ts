@@ -5,7 +5,7 @@ import { Options } from "@layerzerolabs/lz-v2-utilities";
 import { EndpointId } from "@layerzerolabs/lz-definitions";
 import { SendParam } from "./typeDefinitions";
 
-task("send", "Calls the send function on the MyOFTMock contract with encoded swap parameters")
+task("send", "Calls the send function on the MyOFTMock contract with encoded send parameters")
     .addParam("contract", "The address of the MyOFTMock contract")
     .addParam("amount", "The amount of MyOFT to send")
     .addParam("recipient", "The recipient address")
