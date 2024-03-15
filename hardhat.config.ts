@@ -62,6 +62,16 @@ const config: HardhatUserConfig = {
             url: 'https://rpc.ankr.com/avalanche_fuji',
             accounts,
         },
+        arbone: {
+            eid: EndpointId.ARBITRUM_V2_MAINNET,
+            url: 'https://arbitrum.llamarpc.com',
+            accounts
+        },
+        ethereum: {
+            eid: EndpointId.ETHEREUM_V2_MAINNET,
+            url: 'https://eth.llamarpc.com',
+            accounts
+        }
     },
     namedAccounts: {
         deployer: {
